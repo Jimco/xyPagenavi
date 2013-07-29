@@ -12,7 +12,7 @@
     }else if(typeof option === 'string'){
       var values = [];
       var elements = this.each(function(){
-        var data = this.data('_xyPagenavi');
+        var data = $(this).data('_xyPagenavi');
         if(data){
           if(option === 'destroy'){
             data.destroy();
@@ -123,7 +123,7 @@
 
     destroy: function(){
       this.pagenavi.remove();
-      this.$elem.removeDate('_xyPagenavi');
+      this.$elem.removeData('_xyPagenavi');
     }
   }
 

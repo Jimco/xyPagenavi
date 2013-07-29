@@ -18,11 +18,13 @@
 <body>
   <div class="demoWrap">
     <h3>jQuery分页插件 - xyPagenavi</h3>
+    <div><button type="button" data-id="pagenavi1">Destroy1</button><button type="button" data-id="pagenavi2">Destroy2</button></div>
 
     <div id="pagenavi1" class="pagenavi"></div>
     <div id="pagenavi2" class="pagenavi"></div>
     <p id="pagenavi2_contents" style="text-align:center;"></p>
-  </div>   
+
+  </div>
 
   <script src="http://static.cucimg.com/js/lib/jquery-1.7.2.min.js"></script>
   <script src="jquery.xyPagenavi.js"></script>
@@ -36,6 +38,14 @@
       url: function(i){
         $('#pagenavi2_contents').html('当前页码： ' + (i+1) + '，当前页获取到的最后一条数据索引：' + i*this.settings.limit);
       }
+    });
+
+    $('button').on('click', function(e){
+      var $target = $(e.currentTarget)
+        , pageId = $target.data('id');
+
+      // debugger;
+      $('#'+pageId).xyPagenavi('destroy');
     });
 
   </script>
