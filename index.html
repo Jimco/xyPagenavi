@@ -19,30 +19,25 @@
   <div class="demoWrap">
     <h3>jQuery分页插件 - xyPagenavi</h3>
 
-    <div class="pagenavi">
-      <div class="_xyPagenavi_holder _xyPagenavi_theme_default">
-        <a href="javascript:void(0);" class="_xyPagenavi_first"><span>&lt;&lt;</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_pre"><span>&lt;</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_link"><span>1</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_link _xyPagenavi_link_active"><span>2</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_link"><span>3</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_link"><span>4</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_link"><span>5</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_link"><span>6</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_link"><span>7</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_next"><span>&gt;</span></a>
-        <a href="javascript:void(0);" class="_xyPagenavi_last"><span>&gt;&gt;</span></a>
-      </div>        
-    </div>
-
-    <div id="pagenavi1" class="pagenavi" data-xy="xyPagenavi"></div>
-    <p id="pagenavi1_contents" style="text-align:center;"></p>
+    <div id="pagenavi1" class="pagenavi"></div>
+    <div id="pagenavi2" class="pagenavi"></div>
+    <p id="pagenavi2_contents" style="text-align:center;"></p>
   </div>   
 
   <script src="http://static.cucimg.com/js/lib/jquery-1.7.2.min.js"></script>
   <script src="jquery.xyPagenavi.js"></script>
   <script>
-    $('#pagenavi1').xyPagenavi();
+    $('#pagenavi1').xyPagenavi({
+      spread: 2
+    });
+
+    $('#pagenavi2').xyPagenavi({
+      ajax: true,
+      url: function(i){
+        $('#pagenavi2_contents').html('当前页码： ' + (i+1) + '，当前页获取到的最后一条数据索引：' + i*this.settings.limit);
+      }
+    });
+
   </script>
 </body>
 </html>

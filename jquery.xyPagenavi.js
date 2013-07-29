@@ -49,10 +49,8 @@
     total: 400,                 // 总数据数目
     index: 0,                   // 当前第一条数据索引
     limit: 20,                  // 每页数据数目
-    ajax: true,                 // 设置是否为ajax
-    url:  function(i){
-            $('#pagenavi1_contents').html('当前页码： ' + (i+1) + '，当前页获取到的最后一条数据索引：' + i*this.settings.limit);
-          }                     // 如果 ajax=true, 则为相应页面的执行函数
+    ajax: false,                // 设置是否为ajax
+    url:  '#'                   // 如果 ajax=true, 则为相应页面的执行函数
   }
 
   function Pagenavi(settings, $elem){
