@@ -40,19 +40,19 @@
   }
 
   $.fn.xyPagenavi.defaultSettings = {
-    theme: 'default',
-    first: '&lt;&lt;',
-    prev: '&lt;',
-    next: '&gt;',
-    last: '&gt;&gt;',
-    spread: 5,
-    total: 400,
-    index: 0,
-    limit: 20,
+    theme: 'default',           // 皮肤设置
+    first: '&lt;&lt;',          // 首页字符设置
+    prev: '&lt;',               // 上一页字符设置
+    next: '&gt;',               // 下一页字符设置
+    last: '&gt;&gt;',           // 最后一页字符设置
+    spread: 5,                  // 控制分页显示(展示的分页数为 spread*2 + 1)
+    total: 400,                 // 总数据数目
+    index: 0,                   // 当前第一条数据索引
+    limit: 20,                  // 每页数据数目
+    ajax: true,                 // 设置是否为ajax
     url:  function(i){
-            $('#pagenavi1_contents').html('Yay, you have reached page ' + (i+1) + ', and index ' + i*this.settings.limit);
-          },
-    ajax: true
+            $('#pagenavi1_contents').html('当前页码： ' + (i+1) + '，当前页获取到的最后一条数据索引：' + i*this.settings.limit);
+          }                     // 如果 ajax=true, 则为相应页面的执行函数
   }
 
   function Pagenavi(settings, $elem){
@@ -79,8 +79,7 @@
         , start = 0
         , end = 0;
 
-      console.log(totalPages, visiblePages, currentPage);
-
+      // console.log(totalPages, visiblePages, currentPage);
       if(totalPages < visiblePages){
         start = 0;
         end = totalPages;
@@ -110,7 +109,7 @@
     getLink: function(i, key){
       if(this.settings.ajax){
         var me = this;
-        return $('<a href="javascript:void(0);" class="_xyPagenavi_link '+ (key ? '_xyPagenavi_link_' + key : '') +'></a>')
+        return $('<a href="javascript:void(0);" class="_xyPagenavi_link '+ (key ? '_xyPagenavi_link_' + key : '') +'"></a>')
           .html('<span>'+ (this.settings[key] || (i+1)) +'</span>')
           .click(function(){
             me.settings.index = i*me.settings.limit;
