@@ -7,16 +7,16 @@
 (function(window, $, undefined){
 
   $.fn.xyPagenavi = function(option, settings){
-    if(typeof option === 'object'){
-      settings = option;
-    }else if(typeof option === 'string'){
+
+    if(typeof option === 'string'){
       var values = [];
       var elements = this.each(function(){
         var data = $(this).data('_xyPagenavi');
         if(data){
           if(option === 'destroy'){
             data.destroy();
-          }else if($.fn.xyPagenavi.defaultSettings[option] !== undefined){
+          }
+          else if($.fn.xyPagenavi.defaultSettings[option] !== undefined){
             if(settings !== undefined){ data.settings[option] = settings; }
             else{ values.push(data.settings[option]); }
           }
@@ -29,23 +29,21 @@
     }
 
     return this.each(function(){
-      var $elem = $(this)
-        , _settings = $.extend({}, $.fn.xyPagenavi.defaultSettings, settings || {})
-        , pagenavi = new Pagenavi(_settings, $elem)
-        , $el = pagenavi.generate();
+      var $this = $(this)
+        , data = $this.data('_xyPagenavi')
+        , options = typeof option === 'object' && option;
 
-      $elem.append($el);
-      $elem.data('_xyPagenavi', pagenavi);
+      if(!data) $this.data('_xyPagenavi', (data = new Pagenavi(options, $this)));
     });
   }
 
   $.fn.xyPagenavi.defaultSettings = {
     theme: 'default',           // 皮肤设置
-    first: '&lt;&lt;',          // 首页字符设置
-    prev: '&lt;',               // 上一页字符设置
-    next: '&gt;',               // 下一页字符设置
-    last: '&gt;&gt;',           // 最后一页字符设置
-    spread: 5,                  // 控制分页显示(展示的分页数为 spread*2 + 1)
+    first: '&lt;&lt;',          // 首页字符设置，false 或留空为不显示
+    prev: '&lt;',               // 上一页字符设置，false 或留空为不显示
+    next: '&gt;',               // 下一页字符设置，false 或留空为不显示
+    last: '&gt;&gt;',           // 最后一页字符设置，false 或留空为不显示
+    spread: 2,                  // 控制分页显示(展示的分页数为 spread*2 + 1)
     total: 400,                 // 总数据数目
     index: 0,                   // 当前第一条数据索引
     limit: 20,                  // 每页数据数目
@@ -55,25 +53,32 @@
 
   function Pagenavi(settings, $elem){
     this.pagenavi = null;
-    this.settings = settings;
+    this.settings = $.extend({}, $.fn.xyPagenavi.defaultSettings, settings || {});
     this.$elem = $elem;
 
-    return this;
+    this.generate();
   }
 
   Pagenavi.prototype = {
     generate: function(){
-      if(this.pagenavi) return this.pagenavi;
+
+      // if(this.pagenavi) return this.pagenavi;
 
       this.pagenavi = $('<div class="_xyPagenavi_holder _xyPagenavi_theme_'+ this.settings.theme +'"></div>');
+
       this.generateLinks();
-      return this.pagenavi;
+
+      this.$elem.html(this.pagenavi);
+      // return this.pagenavi;
     },
 
     generateLinks: function(){
-      var totalPages = Math.ceil(this.settings.total/this.settings.limit)
-        , visiblePages = this.settings.spread*2 + 1
-        , currentPage = Math.ceil(this.settings.index/this.settings.limit)
+      var me = this
+        , settings = me.settings
+        , pagenavi = me.pagenavi
+        , totalPages = Math.ceil(settings.total/settings.limit)
+        , visiblePages = settings.spread*2 + 1
+        , currentPage = Math.ceil(settings.index/settings.limit)
         , start = 0
         , end = 0;
 
@@ -81,28 +86,31 @@
       if(totalPages < visiblePages){
         start = 0;
         end = totalPages;
-      }else if(currentPage < this.settings.spread){
+      }
+      else if(currentPage < settings.spread){
         start = 0;
         end = visiblePages;
-      }else if(currentPage > totalPages - this.settings.spread - 1){
+      }
+      else if(currentPage > totalPages - settings.spread - 1){
         start = totalPages - visiblePages;
         end = totalPages;
-      }else{
-        start = currentPage - this.settings.spread;
-        end = currentPage + this.settings.spread + 1;
+      }
+      else{
+        start = currentPage - settings.spread;
+        end = currentPage + settings.spread + 1;
       }
 
-      this.pagenavi.html('');
-      if(this.settings.first) this.pagenavi.append(this.getLink(0, 'first'));
-      if(this.settings.prev) this.pagenavi.append(this.getLink(currentPage === 0 ? 0 : currentPage-1, 'prev'));
+      pagenavi.html('');
+      if(settings.first) pagenavi.append(this.getLink(0, 'first'));
+      if(settings.prev) pagenavi.append(this.getLink(currentPage === 0 ? 0 : currentPage-1, 'prev'));
 
       for(i = start; i < end; i++){
-        this.pagenavi.append(this.getLink(i, i*this.settings.limit === this.settings.index ? 'active' : null));
+        pagenavi.append(this.getLink(i, i*settings.limit === settings.index ? 'active' : null));
       }
 
-      if(this.settings.next) this.pagenavi.append(this.getLink(currentPage === totalPages-1 ? totalPages-1 : currentPage+1, 'next'));
-      if(this.settings.last) this.pagenavi.append(this.getLink(totalPages-1, 'last'));
-    },
+      if(settings.next) pagenavi.append(this.getLink(currentPage === totalPages-1 ? totalPages-1 : currentPage+1, 'next'));
+      if(settings.last) pagenavi.append(this.getLink(totalPages-1, 'last'));
+    }, 
 
     getLink: function(i, key){
       if(this.settings.ajax){
@@ -114,7 +122,8 @@
             me.generateLinks();
             me.settings.url.apply(me, [i]);
           });
-      }else{
+      }
+      else{
         var url = typeof(this.settings.url) === 'function' ? this.settings.url.apply(this, [i]) : this.settings.url + '/' + i*this.settings.limit;
 
         return $('<a href="'+ url +'" class="_xyPagenavi_link '+ (key ? '_xyPagenavi_link_' + key : '') +'"></a>').html('<span>'+ (this.settings[key] || (i+1)) +'</span>');
